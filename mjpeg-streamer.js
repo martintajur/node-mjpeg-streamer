@@ -54,11 +54,11 @@ if (typeof device == 'undefined' || device === null) {
     device = default_device;
 }
 
-if (typeof width == 'undefined' || width == null) {
+if (typeof width == 'undefined' || width === null) {
     width=640;
 }
 
-if (typeof height == 'undefined' || height == null) {
+if (typeof height == 'undefined' || height === null) {
     height=480;
 }
 
@@ -83,7 +83,7 @@ var server = http.createServer(function(req, res) {
         });
 
         var subscriber_token = PubSub.subscribe('MJPEG', function(msg, data) {
-            dataBuf = Buffer.alloc(data);
+            dataBuf = Buffer.from(data);
             res.write('--' + boundary + '\r\n');
             res.write('Content-Type: image/jpeg\r\n');
             res.write('Content-Length: ' + dataBuf.length + '\r\n');
@@ -148,5 +148,7 @@ console.log("Capture started " + new Date().toISOString());
 
 cam.capture(function loop(success) {
   PubSub.publish('MJPEG', cam.frameRaw());
-  cam.capture(loop);
+  setTimeout(function() {
+    cam.capture(loop);
+  }, 1000 / 15);
 });
