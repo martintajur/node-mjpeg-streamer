@@ -147,7 +147,9 @@ cam.start();
 console.log("Capture started " + new Date().toISOString());
 
 cam.capture(function loop(success) {
-  PubSub.publish('MJPEG', cam.frameRaw());
+  var jpeg = new Jpeg(Buffer.from(cam.frameRaw()), cam.width, cam.height);
+  var jpeg_image_data = jpeg.encodeSync();
+  PubSub.publish('MJPEG', jpeg_image_data);
   setTimeout(function() {
     cam.capture(loop);
   }, 1000 / 3);
