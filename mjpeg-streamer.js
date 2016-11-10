@@ -83,14 +83,12 @@ var server = http.createServer(function(req, res) {
         });
 
         var subscriber_token = PubSub.subscribe('MJPEG', function(msg, data) {
-            //console.log( msg, data );
-            //jpeg.encodeSync().pipe(writer)
-            // console.log("Buffer(jpeg_image_data).length: "+Buffer(jpeg_image_data).length);
+            var dataBuf = new Buffer(data);
             res.write('--' + boundary + '\r\n');
             res.write('Content-Type: image/jpeg\r\n');
-            res.write('Content-Length: ' + data.length + '\r\n');
+            res.write('Content-Length: ' + dataBuf.length + '\r\n');
             res.write("\r\n");
-            res.write(Buffer.from(data), 'binary');
+            res.write(dataBuf, 'binary');
             res.write("\r\n");
 
         });
@@ -157,3 +155,5 @@ var captureFrame = function() {
     process.nextTick(captureFrame);
   });
 };
+
+captureFrame();
