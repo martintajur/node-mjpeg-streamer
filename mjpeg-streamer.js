@@ -133,7 +133,8 @@ console.log("Opened camera device /dev/video" + device);
 var fmts = [],
     chosenFmt = {
         width: width,
-        height: height
+        height: height,
+        interval: cam.configGet().interval
     },
     fmtChosen = false;
 
@@ -158,10 +159,8 @@ cam.start();
 console.log("Capture started " + new Date().toISOString());
 
 cam.capture(function loop(success) {
-  var jpeg = new Jpeg(Buffer.from(cam.frameRaw()), cam.width, cam.height);
-  var jpeg_image_data = jpeg.encodeSync();
-  PubSub.publish('MJPEG', jpeg_image_data);
+  PubSub.publish('MJPEG', Buffer.from(cam.frameRaw()));
   setTimeout(function() {
     cam.capture(loop);
-  }, 1000 / 3);
+  }, 1000 / chosenFmt.interval.denominator);
 });
