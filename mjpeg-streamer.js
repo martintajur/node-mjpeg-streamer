@@ -71,7 +71,7 @@ var server = http.createServer(function(req, res) {
         res.end(["<!doctype html>", "<html><head><meta charset='utf-8'/>", "</head><body>", "<img src='/cam.jpg' id='cam' />", "</body></html>", ].join(""));
         return;
     }
-    if (req.url.match(/^\/.+\.jpg$/)) {
+    if (req.url.match(/^\/.+\.(jpg|mjpg|mjpeg|mpjpeg|mpjpg)$/)) {
         console.log("requested " + req.url);
         var boundary = "BOUNDARY";
         res.writeHead(200, {
