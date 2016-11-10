@@ -134,13 +134,19 @@ var fmts = [],
     chosenFmt = {
         width: width,
         height: height
-    };
+    },
+    fmtChosen = false;
 
 cam.formats.forEach(function(fmt, key) {
-    if (fmt.width === width && fmt.height === height) {
-        chosenFmt = fmt;
+    if (fmt.formatName !== 'MJPG') {
+        return;
     }
     fmts.push(fmt.formatName + "@" + fmt.width + "x" + fmt.height + "(" + fmt.interval.numerator + "/" + fmt.interval.denominator + ")");
+
+    if (fmt.width === width && fmt.height === height) {
+        chosenFmt = fmt;
+        fmtChosen = true;
+    }
 });
 console.log(fmts.join(', '));
 
