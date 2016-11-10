@@ -7,7 +7,7 @@ var v4l2camera = require("v4l2camera");
 var Jpeg = require('libjpeg').Jpeg;
 var Getopt = require('node-getopt');
 
-var bundle = require('package.json');
+var bundle = require('./package.json');
 var version = bundle.version;
 var appname = bundle.name;
 var appdescr = bundle.description;
