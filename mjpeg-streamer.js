@@ -59,7 +59,7 @@ if (typeof width == 'undefined' || width === null) {
 }
 
 if (typeof height == 'undefined' || height === null) {
-    width=480;
+    height=480;
 }
 
 var server = http.createServer(function(req, res) {
@@ -72,8 +72,8 @@ var server = http.createServer(function(req, res) {
         return;
     }
     if (req.url.match(/^\/.+\.(mjpeg|mjpg|jpg|jpeg|mpjpeg)$/)) {
-        console.log("requested " + req.url)
-        var boundary = "BOUNDARY"
+        console.log("requested " + req.url);
+        var boundary = "BOUNDARY";
         res.writeHead(200, {
             'Content-Type': 'multipart/x-mixed-replace;boundary="' + boundary + '"',
             'Connection': 'keep-alive',
@@ -87,7 +87,7 @@ var server = http.createServer(function(req, res) {
             //console.log( msg, data );
             //jpeg.encodeSync().pipe(writer)
             // console.log("Buffer(jpeg_image_data).length: "+Buffer(jpeg_image_data).length);
-            res.write('--' + boundary + '\r\n')
+            res.write('--' + boundary + '\r\n');
             res.write('Content-Type: image/jpeg\r\n');
             res.write('Content-Length: ' + data.length + '\r\n');
             res.write("\r\n");
