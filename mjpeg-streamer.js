@@ -55,11 +55,11 @@ if (typeof device == 'undefined' || device === null) {
 }
 
 if (typeof width == 'undefined' || width === null) {
-    width=352;
+    width=640;
 }
 
 if (typeof height == 'undefined' || height === null) {
-    width=288;
+    width=480;
 }
 
 var server = http.createServer(function(req, res) {
