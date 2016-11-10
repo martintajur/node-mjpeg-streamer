@@ -143,14 +143,8 @@ cam.configSet({
 
 cam.start();
 
-cam.capture(function loop() {
-
-    var rgb = cam.toRGB();
-    console.log("W:"+cam.width+"H:"+cam.height)
-    var jpeg = new Jpeg(Buffer(rgb), cam.width, cam.height);
-    var jpeg_image_data = jpeg.encodeSync();
-
-    PubSub.publish('MJPEG', Buffer(jpeg_image_data));
-
-    cam.capture(loop);
+cam.capture(function loop(success) {
+  PubSub.publish('MJPEG', cam.frameRaw());
+  cam.capture(loop);
+  cam.stop();
 });
