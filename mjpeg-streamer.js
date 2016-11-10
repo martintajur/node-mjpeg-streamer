@@ -87,7 +87,7 @@ var server = http.createServer(function(req, res) {
             res.write('Content-Type: image/jpeg\r\n');
             res.write('Content-Length: ' + Buffer(data).length + '\r\n');
             res.write("\r\n");
-            res.write(Buffer(data), 'binary');
+            res.write(Buffer(data).toString('binary'), 'binary');
             res.write("\r\n");
 
         });
