@@ -134,9 +134,11 @@ try {
 
 console.log("Opened camera device /dev/video" + device);
 
+var fmts = [];
 cam.formats.forEach(function(fmt) {
-    console.log(fmt.formatName + ", " + fmt.width + "x" + fmt.height);
+    fmts.push(fmt.formatName + "@" + fmt.width + "x" + fmt.height);
 });
+console.log(fmts.join(', '));
 
 cam.configSet({
     width: width,
