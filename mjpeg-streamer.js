@@ -82,7 +82,6 @@ var server = http.createServer(function(req, res) {
             'Pragma': 'no-cache'
         });
 
-  
         var subscriber_token = PubSub.subscribe('MJPEG', function(msg, data) {
             //console.log( msg, data );
             //jpeg.encodeSync().pipe(writer)
@@ -149,10 +148,12 @@ console.log("Resolution set to " + width + "x" + height);
 cam.start();
 console.log("Capture started " + new Date().toISOString());
 
-cam.capture(function loop(success) {
-  if (!success) {
-    console.log("Capture failed at " + new Date().toISOString());
-  }
-  PubSub.publish('MJPEG', cam.frameRaw());
-  process.nextTick(cam.capture.bind(this, loop));
-});
+var captureFrame = function() {
+  cam.capture(function loop(success) {
+    if (!success) {
+      console.log("Capture failed at " + new Date().toISOString());
+    }
+    PubSub.publish('MJPEG', cam.frameRaw());
+    process.nextTick(captureFrame);
+  });
+};
