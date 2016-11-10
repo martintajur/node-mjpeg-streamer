@@ -1,7 +1,7 @@
 {
   "name": "mjpeg-streamer",
-  "version": "0.0.7",
-  "description": "Mjpeg streamer with v4l2 as camera interface",
+  "version": "1.0.0",
+  "description": "MJPEG streamer with v4l2 as camera interface",
   "main": "mjpeg-streamer.js",
   "dependencies": {
     "getopt": "~0.1.0",
@@ -14,19 +14,22 @@
   "scripts": {
     "test": "echo \"Error: no test specified as v4l2 dependency might not be met in all test setups\" && exit 1"
   },
-    "bin": {
+  "bin": {
     "mjpeg-streamer": "./mjpeg-streamer.js"
-    },
+  },
   "repository": {
     "type": "git",
-    "url": "https://kiran-geon@github.com/kiran-geon/node-mjpeg-streamer.git"
+    "url": "https://github.com/pipedrive/node-mjpeg-streamer.git"
   },
   "keywords": [
     "mjpeg",
     "v4l2",
     "streamer"
   ],
-  "author": "Kiran G <kiran@gadgeon.com>",
+  "authors": [
+    "Kiran G <kiran@gadgeon.com>",
+    "Martin Tajur / Pipedrive Inc <martin@pipedrive.com>"
+  ],
   "license": ["MIT","LGPL-3.0"],
   "bugs": {
     "url": "https://github.com/kiran-geon/node-mjpeg-streamer/issues"

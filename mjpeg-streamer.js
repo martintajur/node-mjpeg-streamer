@@ -5,16 +5,15 @@ var PubSub = require("pubsub-js");
 var util = require("util");
 var v4l2camera = require("v4l2camera");
 var Jpeg = require('libjpeg').Jpeg;
-var Getopt = require('node-getopt')
+var Getopt = require('node-getopt');
 
-var version = "0.0.7";
-var appname = "mjpeg-streamer";
-var appdescr = "Mjpeg streamer with v4l2 as camera interface";
+var bundle = require('package.json');
+var version = bundle.version;
+var appname = bundle.name;
+var appdescr = bundle.description;
 
-
-
-var default_port = 8080
-var default_device = 0
+var default_port = 8080;
+var default_device = 0;
 
 getopt = new Getopt([
         ['p', 'port=ARG', 'Port'],
@@ -24,7 +23,7 @@ getopt = new Getopt([
         ['h', 'help', 'display this help'],
         ['v', 'version', 'show version']
     ]) // create Getopt instance
-    .bindHelp() // bind option 'help' to default action
+    .bindHelp(); // bind option 'help' to default action
 
 
 opt = getopt.parse(process.argv.slice(2));
@@ -38,28 +37,28 @@ getopt.setHelp(
 
 
 
-if (opt.options["version"]) {
-    console.log(appname + " " + version)
+if (opt.options.version) {
+    console.log(appname + " " + version);
     process.exit(0);
 }
-var port = opt.options["port"]
-var device = opt.options["device"]
-var width = opt.options["width"]
-var height = opt.options["height"]
-if (typeof port == 'undefined' || port == null) {
+var port = opt.options.port;
+var device = opt.options.device;
+var width = opt.options.width;
+var height = opt.options.height;
+if (typeof port == 'undefined' || port === null) {
     console.error("Port argument missing. Assuming default port "+default_port);
     port = default_port;
 }
-if (typeof device == 'undefined' || device == null) {   
+if (typeof device == 'undefined' || device === null) {   
     console.error("Device argument missing. Assuming default device "+default_device);
     device = default_device;
 }
 
-if (typeof width == 'undefined' || width == null) {
+if (typeof width == 'undefined' || width === null) {
     width=352;
 }
 
-if (typeof height == 'undefined' || height == null) {
+if (typeof height == 'undefined' || height === null) {
     width=288;
 }
 
@@ -73,8 +72,8 @@ var server = http.createServer(function(req, res) {
         return;
     }
     if (req.url.match(/^\/.+\.(mjpeg|mjpg|jpg|jpeg|mpjpeg)$/)) {
-        console.log("requested " + req.url)
-        var boundary = "BOUNDARY"
+        console.log("requested " + req.url);
+        var boundary = "BOUNDARY";
         res.writeHead(200, {
             'Content-Type': 'multipart/x-mixed-replace;boundary="' + boundary + '"',
             'Connection': 'keep-alive',
@@ -85,14 +84,11 @@ var server = http.createServer(function(req, res) {
 
   
         var subscriber_token = PubSub.subscribe('MJPEG', function(msg, data) {
-            //console.log( msg, data );
-            //jpeg.encodeSync().pipe(writer)
-            // console.log("Buffer(jpeg_image_data).length: "+Buffer(jpeg_image_data).length);
-            res.write('--' + boundary + '\r\n')
+            res.write('--' + boundary + '\r\n');
             res.write('Content-Type: image/jpeg\r\n');
             res.write('Content-Length: ' + data.length + '\r\n');
             res.write("\r\n");
-            res.write(data);
+            res.write(Buffer(data, 'binary'));
             res.write("\r\n");
 
         });
@@ -122,7 +118,6 @@ server.on('error', function(e) {
 
 });
 
-
 server.listen(port);
 console.log("Started listening at port " + port);
 console.log("Using v4l2 device /dev/video" + device);
@@ -135,7 +130,10 @@ try {
 }
 
 console.log("Opened camera device /dev/video" + device);
-console.log(cam.formats);
+
+cam.formats.forEach(function(fmt) {
+    console.log(fmt.formatName + ", " + fmt.width + "x" + fmt.height);
+});
 
 cam.configSet({
     width: width,
@@ -143,8 +141,12 @@ cam.configSet({
 });
 
 cam.start();
+console.log("Capture started " + new Date().toISOString());
 
 cam.capture(function loop(success) {
+  if (!success) {
+    console.log("Capture failed at " + new Date().toISOString());
+  }
   PubSub.publish('MJPEG', cam.frameRaw());
-  cam.capture(loop);
+  process.nextTick(cam.capture.bind(this, loop));
 });
