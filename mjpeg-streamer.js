@@ -54,11 +54,11 @@ if (typeof device == 'undefined' || device === null) {
     device = default_device;
 }
 
-if (typeof width == 'undefined' || width === null) {
+if (typeof width == 'undefined' || width == null) {
     width=640;
 }
 
-if (typeof height == 'undefined' || height === null) {
+if (typeof height == 'undefined' || height == null) {
     height=480;
 }
 
@@ -83,11 +83,12 @@ var server = http.createServer(function(req, res) {
         });
 
         var subscriber_token = PubSub.subscribe('MJPEG', function(msg, data) {
+            dataBuf = Buffer.alloc(data);
             res.write('--' + boundary + '\r\n');
             res.write('Content-Type: image/jpeg\r\n');
-            res.write('Content-Length: ' + Buffer(data).length + '\r\n');
+            res.write('Content-Length: ' + dataBuf.length + '\r\n');
             res.write("\r\n");
-            res.write(Buffer(data).toString('binary'), 'binary');
+            res.write(dataBuf, 'binary');
             res.write("\r\n");
 
         });
