@@ -145,14 +145,7 @@ console.log("Resolution set to " + width + "x" + height);
 cam.start();
 console.log("Capture started " + new Date().toISOString());
 
-var captureFrame = function() {
-  cam.capture(function loop(success) {
-    if (!success) {
-      console.log("Capture failed at " + new Date().toISOString());
-    }
-    PubSub.publish('MJPEG', cam.frameRaw());
-    captureFrame();
-  });
-};
-
-captureFrame();
+cam.capture(function loop(success) {
+  PubSub.publish('MJPEG', cam.frameRaw());
+  cam.capture(loop);
+});
