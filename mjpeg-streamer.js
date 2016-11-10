@@ -75,7 +75,7 @@ var server = http.createServer(function(req, res) {
         console.log("requested " + req.url);
         var boundary = "BOUNDARY";
         res.writeHead(200, {
-            'Content-Type': 'multipart/x-mixed-replace;boundary="' + boundary + '"',
+            'Content-Type': 'multipart/x-mixed-replace;boundary=' + boundary + '',
             'Connection': 'keep-alive',
             'Expires': 'Fri, 01 Jan 1990 00:00:00 GMT',
             'Cache-Control': 'no-cache, no-store, max-age=0, must-revalidate',
@@ -88,7 +88,7 @@ var server = http.createServer(function(req, res) {
             res.write('Content-Type: image/jpeg\r\n');
             res.write('Content-Length: ' + data.length + '\r\n');
             res.write("\r\n");
-            res.write(Buffer(data, 'binary'));
+            res.write(new Buffer(data, 'binary'));
             res.write("\r\n");
 
         });
