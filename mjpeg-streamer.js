@@ -146,5 +146,4 @@ cam.start();
 cam.capture(function loop(success) {
   PubSub.publish('MJPEG', cam.frameRaw());
   cam.capture(loop);
-  cam.stop();
 });
