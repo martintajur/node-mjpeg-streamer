@@ -82,16 +82,15 @@ var server = http.createServer(function(req, res) {
             'Pragma': 'no-cache'
         });
 
-  
         var subscriber_token = PubSub.subscribe('MJPEG', function(msg, data) {
             res.write('--' + boundary + '\r\n');
             res.write('Content-Type: image/jpeg\r\n');
             res.write('Content-Length: ' + data.length + '\r\n');
             res.write("\r\n");
-            res.write(new Buffer(data, 'binary') + "\r\n");
+            res.write(data, 'binary');
             res.write("\r\n");
-
         });
+
         res.on('close', function() {
 
             console.log("Connection closed!");
