@@ -150,5 +150,5 @@ cam.capture(function loop(success) {
   PubSub.publish('MJPEG', cam.frameRaw());
   setTimeout(function() {
     cam.capture(loop);
-  }, 1000 / 15);
+  }, 1000 / 3);
 });
