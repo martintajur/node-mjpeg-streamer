@@ -68,10 +68,10 @@ var server = http.createServer(function(req, res) {
         res.writeHead(200, {
             "content-type": "text/html;charset=utf-8",
         });
-        res.end(["<!doctype html>", "<html><head><meta charset='utf-8'/>", "</head><body>", "<img src='test.jpg' id='cam'  />", "</body></html>", ].join(""));
+        res.end(["<!doctype html>", "<html><head><meta charset='utf-8'/>", "</head><body>", "<img src='/cam.jpg' id='cam' />", "</body></html>", ].join(""));
         return;
     }
-    if (req.url.match(/^\/.+\.(mjpeg|mjpg|jpg|jpeg|mpjpeg)$/)) {
+    if (req.url.match(/^\/.+\.jpg$/)) {
         console.log("requested " + req.url);
         var boundary = "BOUNDARY";
         res.writeHead(200, {
