@@ -103,9 +103,8 @@ var server = http.createServer(function(req, res) {
 
         });
 
-        //var png = toPng();
-        //res.end(png, 'binary');
-        //console.log("Sent data"+png.length);
+    } else {
+        res.end();
     }
 });
 
