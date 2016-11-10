@@ -132,14 +132,11 @@ console.log("Opened camera device /dev/video" + device);
 
 var fmts = [];
 cam.formats.forEach(function(fmt) {
-    fmts.push(fmt.formatName + "@" + fmt.width + "x" + fmt.height);
+    fmts.push(fmt.formatName + "@" + fmt.width + "x" + fmt.height + "(" + fmt.interval.nominator + "/" + fmt.interval.denominator + ")");
 });
 console.log(fmts.join(', '));
 
-cam.configSet({
-    width: width,
-    height: height
-});
+cam.configSet(cam.formats[0]);
 
 console.log("Resolution set to " + width + "x" + height);
 
