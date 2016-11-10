@@ -4,7 +4,7 @@ var http = require("http");
 var PubSub = require("pubsub-js");
 var util = require("util");
 var v4l2camera = require("v4l2camera");
-var Jpeg = require('jpeg').Jpeg;
+var Jpeg = require('libjpeg').Jpeg;
 var Getopt = require('node-getopt')
 
 var version = "0.0.7";
