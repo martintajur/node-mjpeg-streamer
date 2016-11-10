@@ -146,7 +146,7 @@ console.log(fmts.join(', '));
 
 cam.configSet(chosenFmt);
 
-console.log("Format chosen:" + chosenFmt);
+console.log("Format chosen:" + JSON.stringify(chosenFmt));
 
 cam.start();
 console.log("Capture started " + new Date().toISOString());
