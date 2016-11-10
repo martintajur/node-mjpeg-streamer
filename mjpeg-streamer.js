@@ -130,13 +130,20 @@ try {
 
 console.log("Opened camera device /dev/video" + device);
 
-var fmts = [];
-cam.formats.forEach(function(fmt) {
+var fmts = [],
+    chosenFmt;
+cam.formats.forEach(function(fmt, key) {
+    if (fmt.width === width && fmt.height === height) {
+        chosenFmt = fmt;
+    }
     fmts.push(fmt.formatName + "@" + fmt.width + "x" + fmt.height + "(" + fmt.interval.nominator + "/" + fmt.interval.denominator + ")");
 });
 console.log(fmts.join(', '));
 
-cam.configSet(cam.formats[0]);
+cam.configSet(chosenFmt || {
+    width: width,
+    height: height
+});
 
 console.log("Resolution set to " + width + "x" + height);
 
