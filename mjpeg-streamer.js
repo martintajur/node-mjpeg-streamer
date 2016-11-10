@@ -131,7 +131,11 @@ try {
 console.log("Opened camera device /dev/video" + device);
 
 var fmts = [],
-    chosenFmt;
+    chosenFmt = {
+        width: width,
+        height: height
+    };
+
 cam.formats.forEach(function(fmt, key) {
     if (fmt.width === width && fmt.height === height) {
         chosenFmt = fmt;
@@ -140,12 +144,9 @@ cam.formats.forEach(function(fmt, key) {
 });
 console.log(fmts.join(', '));
 
-cam.configSet(chosenFmt || {
-    width: width,
-    height: height
-});
+cam.configSet(chosenFmt);
 
-console.log("Resolution set to " + width + "x" + height);
+console.log("Format chosen:" + chosenFmt);
 
 cam.start();
 console.log("Capture started " + new Date().toISOString());
