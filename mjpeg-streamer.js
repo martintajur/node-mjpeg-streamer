@@ -128,13 +128,14 @@ console.log("Started listening at port " + port);
 console.log("Using v4l2 device /dev/video" + device);
 
 try {
-    var cam = new v4l2camera.Camera("/dev/video" + device)
+    var cam = new v4l2camera.Camera("/dev/video" + device);
 } catch (err) {
     console.log("v4l2camera error");
     process.exit(1);
 }
 
 console.log("Opened camera device /dev/video" + device);
+console.log(cam.formats);
 
 cam.configSet({
     width: width,
