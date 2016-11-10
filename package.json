@@ -8,7 +8,7 @@
     "node-getopt": "~0.2.3",
     "v4l2camera": "~0.4.3",
     "pubsub-js": "~1.5.2",
-    "jpeg": "~2.0.0"
+    "libjpeg": "~3.0.0"
   },
   "devDependencies": {},
   "scripts": {
