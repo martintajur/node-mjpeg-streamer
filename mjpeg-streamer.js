@@ -140,7 +140,7 @@ cam.formats.forEach(function(fmt, key) {
     if (fmt.width === width && fmt.height === height) {
         chosenFmt = fmt;
     }
-    fmts.push(fmt.formatName + "@" + fmt.width + "x" + fmt.height + "(" + fmt.interval.nominator + "/" + fmt.interval.denominator + ")");
+    fmts.push(fmt.formatName + "@" + fmt.width + "x" + fmt.height + "(" + fmt.interval.numerator + "/" + fmt.interval.denominator + ")");
 });
 console.log(fmts.join(', '));
 
