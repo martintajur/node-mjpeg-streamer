@@ -143,6 +143,8 @@ cam.configSet({
     height: height
 });
 
+console.log("Resolution set to " + width + "x" + height);
+
 cam.start();
 console.log("Capture started " + new Date().toISOString());
 
