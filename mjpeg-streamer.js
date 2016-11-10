@@ -83,12 +83,11 @@ var server = http.createServer(function(req, res) {
         });
 
         var subscriber_token = PubSub.subscribe('MJPEG', function(msg, data) {
-            var dataBuf = new Buffer(data);
             res.write('--' + boundary + '\r\n');
             res.write('Content-Type: image/jpeg\r\n');
-            res.write('Content-Length: ' + dataBuf.length + '\r\n');
+            res.write('Content-Length: ' + data.length + '\r\n');
             res.write("\r\n");
-            res.write(dataBuf, 'binary');
+            res.write(data, 'binary');
             res.write("\r\n");
 
         });
@@ -152,7 +151,7 @@ var captureFrame = function() {
       console.log("Capture failed at " + new Date().toISOString());
     }
     PubSub.publish('MJPEG', cam.frameRaw());
-    process.nextTick(captureFrame);
+    captureFrame();
   });
 };
 
