@@ -15,7 +15,7 @@ var appdescr = bundle.description;
 var default_port = 8080;
 var default_device = 0;
 
-var lastFrameCached = null;
+var lastFrame = null;
 
 getopt = new Getopt([
         ['p', 'port=ARG', 'Port'],
@@ -65,7 +65,7 @@ if (typeof height == 'undefined' || height === null) {
 }
 
 setInterval(function() {
-    PubSub.publish('MJPEG', lastFrameCached);
+    PubSub.publish('MJPEG', lastFrame);
 }, 1000 / 15);
 
 var server = http.createServer(function(req, res) {
@@ -185,7 +185,7 @@ var attachCameraAndStart = function() {
 
     var previousFrame = null;
     var publishFrameInterval = setInterval(function() {
-        var lastFrame = Buffer.from(cam.frameRaw());
+        lastFrame = Buffer.from(cam.frameRaw());
         if (previousFrame && Buffer.compare(lastFrame, previousFrame) === 0) {
             console.log('Capture stopped - camera likely disconnected');
             clearInterval(publishFrameInterval);
