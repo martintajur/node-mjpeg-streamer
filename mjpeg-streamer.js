@@ -176,11 +176,12 @@ var attachCameraAndStart = function() {
             console.log('Capture stopped - camera likely disconnected');
             clearInterval(publishFrameInterval);
             try {
-                cam.stop();
+                cam.stop(function() {
+                    attachCameraAndStart();
+                });
             } catch (err) {
-                // well, knew it, but need to do it anyway.
+                attachCameraAndStart();
             }
-            attachCameraAndStart();
         }
         PubSub.publish('MJPEG', lastFrame);
         previousFrame = lastFrame;
