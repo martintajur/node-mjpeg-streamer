@@ -120,54 +120,65 @@ server.listen(port);
 console.log("Started listening at port " + port);
 console.log("Using v4l2 device /dev/video" + device);
 
-try {
-    var cam = new v4l2camera.Camera("/dev/video" + device);
-} catch (err) {
-    console.log("v4l2camera error");
-    process.exit(1);
-}
+var attachCameraAndStart = function() {
+    var cam = null;
 
-console.log("Opened camera device /dev/video" + device);
-
-var fmts = [],
-    chosenFmt = {
-        format: cam.configGet().format,
-        formatName: cam.configGet().formatName,
-        width: parseInt(width, 10),
-        height: parseInt(height, 10),
-        interval: cam.configGet().interval
-    },
-    fmtChosen = false;
-
-cam.formats.forEach(function(fmt, key) {
-    if (fmt.formatName !== 'MJPG') {
+    try {
+        cam = new v4l2camera.Camera("/dev/video" + device);
+    } catch (err) {
+        setTimeout(attachCameraAndStart, 5000);
         return;
     }
-    fmts.push(fmt.formatName + "@" + fmt.width + "x" + fmt.height + "(" + fmt.interval.numerator + "/" + fmt.interval.denominator + ")");
 
-    if (fmt.width === parseInt(width, 10) && fmt.height === parseInt(height, 10)) {
+    console.log("Opened camera device /dev/video" + device);
+
+    var fmts = [],
         chosenFmt = {
-            format: fmt.format,
-            formatName: fmt.formatName,
+            format: cam.configGet().format,
+            formatName: cam.configGet().formatName,
             width: parseInt(width, 10),
             height: parseInt(height, 10),
-            interval: fmt.interval
+            interval: cam.configGet().interval
+        },
+        fmtChosen = false;
+
+    cam.formats.forEach(function(fmt, key) {
+        if (fmt.formatName !== 'MJPG') {
+            return;
+        }
+        fmts.push(fmt.formatName + "@" + fmt.width + "x" + fmt.height + "(" + fmt.interval.numerator + "/" + fmt.interval.denominator + ")");
+
+        if (fmt.width === parseInt(width, 10) && fmt.height === parseInt(height, 10)) {
+            chosenFmt = {
+                format: fmt.format,
+                formatName: fmt.formatName,
+                width: parseInt(width, 10),
+                height: parseInt(height, 10),
+                interval: fmt.interval
+            };
+            fmtChosen = true;
+        }
+    });
+    console.log(fmts.join(', '));
+
+    cam.configSet(chosenFmt);
+
+    console.log("Format chosen:" + JSON.stringify(chosenFmt));
+
+    cam.start();
+    console.log("Capture started " + new Date().toISOString());
+
+    var lastFrame = null;
+
+    setInterval(function() {
+        if (!lastFrame) {
+            return
         };
-        fmtChosen = true;
-    }
-});
-console.log(fmts.join(', '));
+        PubSub.publish('MJPEG', lastFrame);
+    }, 1000 / 5);
 
-cam.configSet(chosenFmt);
-
-console.log("Format chosen:" + JSON.stringify(chosenFmt));
-
-cam.start();
-console.log("Capture started " + new Date().toISOString());
-
-cam.capture(function loop(success) {
-  PubSub.publish('MJPEG', Buffer.from(cam.frameRaw()));
-  setTimeout(function() {
-    cam.capture(loop);
-  }, 1000 / chosenFmt.interval.denominator);
-});
+    cam.capture(function loop(success) {
+        lastFrame = Buffer.from(cam.frameRaw());
+        cam.capture(loop);
+    });
+};
