@@ -179,7 +179,9 @@ var attachCameraAndStart = function() {
     }, 1000 / 5);
 
     cam.capture(function loop(success) {
-        cam.capture(loop);
+        setTimeout(function() {
+            cam.capture(loop);
+        }, 1000 / 5);
     });
 };
 
