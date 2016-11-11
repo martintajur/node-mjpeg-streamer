@@ -83,12 +83,11 @@ var server = http.createServer(function(req, res) {
         });
 
         var subscriber_token = PubSub.subscribe('MJPEG', function(msg, data) {
-            dataBuf = Buffer.from(data);
             res.write('--' + boundary + '\r\n');
             res.write('Content-Type: image/jpeg\r\n');
-            res.write('Content-Length: ' + dataBuf.length + '\r\n');
+            res.write('Content-Length: ' + data.length + '\r\n');
             res.write("\r\n");
-            res.write(dataBuf, 'binary');
+            res.write(data, 'binary');
             res.write("\r\n");
 
         });
@@ -132,6 +131,7 @@ console.log("Opened camera device /dev/video" + device);
 
 var fmts = [],
     chosenFmt = {
+        format: 'MJPG',
         width: width,
         height: height,
         interval: cam.configGet().interval
@@ -146,6 +146,7 @@ cam.formats.forEach(function(fmt, key) {
 
     if (fmt.width === width && fmt.height === height) {
         chosenFmt = {
+            format: format,
             width: width,
             height: height,
             interval: fmt.interval
