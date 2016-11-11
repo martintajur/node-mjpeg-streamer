@@ -15,6 +15,8 @@ var appdescr = bundle.description;
 var default_port = 8080;
 var default_device = 0;
 
+var lastFrameCached = null;
+
 getopt = new Getopt([
         ['p', 'port=ARG', 'Port'],
         ['w', 'width=ARG', 'Width'],
@@ -61,6 +63,10 @@ if (typeof width == 'undefined' || width === null) {
 if (typeof height == 'undefined' || height === null) {
     height=480;
 }
+
+setInterval(function() {
+    PubSub.publish('MJPEG', lastFrameCached);
+}, 1000 / 15);
 
 var server = http.createServer(function(req, res) {
     //console.log(req.url);
@@ -192,9 +198,8 @@ var attachCameraAndStart = function() {
                 attachCameraAndStart();
             }
         }
-        PubSub.publish('MJPEG', lastFrame);
         previousFrame = lastFrame;
-    }, 1000 / 10);
+    }, 1000 / 15);
 
     cam.capture(function loop(success) {
         cam.capture(loop);
