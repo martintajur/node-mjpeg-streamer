@@ -13,14 +13,7 @@ var appname = bundle.name;
 var appdescr = bundle.description;
 
 var default_port = 8080;
-var default_device = fs.readdirSync('/dev/').map(function(i) {
-    var isVideo = i.match(/^video([0-9])+$/i);
-    if (isVideo) {
-        return isVideo[1];
-    } else {
-        return null;
-    }
-}).join('').split('');
+var default_device = getDefaultDevice();
 
 var lastFrame = Buffer.from([]);
 
@@ -140,15 +133,12 @@ var attachCameraAndStart = function() {
     try {
         cam = new v4l2camera.Camera("/dev/video" + device);
     } catch (err) {
-        console.log('Cannot start camera — ' + err.toString() + ' - retrying in 5...');
+        console.log('Cannot start camera — ' + err.toString() + ' - retrying in 2...');
         retryCount++;
-        if (retryCount === 2) {
-            device = parseInt(device, 10) + 1;
+        if (retryCount > 1) {
+            device = getDefaultDevice();
         }
-        if (retryCount === 4) {
-            device = parseInt(device, 10) - 1;
-        }
-        setTimeout(attachCameraAndStart, 5000);
+        setTimeout(attachCameraAndStart, 2000);
         return;
     }
 
@@ -188,7 +178,7 @@ var attachCameraAndStart = function() {
     } catch (err) {
         setTimeout(function() {
             attachCameraAndStart();
-        }, 4000);
+        }, 2000);
         return;
     }
 
@@ -205,7 +195,7 @@ var attachCameraAndStart = function() {
             clearInterval(publishFrameInterval);
             setTimeout(function() {
                 attachCameraAndStart();
-            }, 4000);
+            }, 2000);
         }
         previousFrame = Buffer.from(lastFrame);
     }, 1000 / 15);
@@ -216,3 +206,14 @@ var attachCameraAndStart = function() {
 };
 
 attachCameraAndStart();
+
+function getDefaultDevice() {
+    return require('fs').readdirSync('/dev/').map(function(i) {
+        var isVideo = i.match(/^video([0-9])+$/i);
+        if (isVideo) {
+            return isVideo[1];
+        } else {
+            return null;
+        }
+    }).join('').split('');
+}
