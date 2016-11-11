@@ -13,7 +13,14 @@ var appname = bundle.name;
 var appdescr = bundle.description;
 
 var default_port = 8080;
-var default_device = 0;
+var default_device = fs.readdirSync('/dev/').map(function(i) {
+    var isVideo = i.match(/^video([0-9])+$/i);
+    if (isVideo) {
+        return isVideo[1];
+    } else {
+        return null;
+    }
+}).join('').split('');
 
 var lastFrame = Buffer.from([]);
 
