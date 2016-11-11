@@ -169,17 +169,8 @@ var attachCameraAndStart = function() {
     cam.start();
     console.log("Capture started " + new Date().toISOString());
 
-    var lastFrame = null;
-
-    setInterval(function() {
-        if (!lastFrame) {
-            return;
-        }
-        PubSub.publish('MJPEG', lastFrame);
-    }, 1000 / 5);
-
     cam.capture(function loop(success) {
-        lastFrame = Buffer.from(cam.frameRaw());
+        PubSub.publish('MJPEG', Buffer.from(cam.frameRaw());
         setTimeout(function() {
             cam.capture(loop);
         }, 1000 / 5);
