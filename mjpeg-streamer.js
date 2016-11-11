@@ -189,14 +189,9 @@ var attachCameraAndStart = function() {
         if (previousFrame !== null && Buffer.compare(lastFrame, previousFrame) === 0) {
             console.log('Capture stopped - camera likely disconnected');
             clearInterval(publishFrameInterval);
-            try {
-                cam.stop(function() {
-                    attachCameraAndStart();
-                });
-            } catch (err) {
-                console.log('Cannot stop camera anymore');
+            setTimeout(function() {
                 attachCameraAndStart();
-            }
+            }, 2000);
         }
         previousFrame = lastFrame;
     }, 1000 / 15);
