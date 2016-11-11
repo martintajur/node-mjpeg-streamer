@@ -131,7 +131,8 @@ console.log("Opened camera device /dev/video" + device);
 
 var fmts = [],
     chosenFmt = {
-        format: 'MJPG',
+        format: cam.configGet().format,
+        formatName: cam.configGet().formatName,
         width: width,
         height: height,
         interval: cam.configGet().interval
@@ -147,6 +148,7 @@ cam.formats.forEach(function(fmt, key) {
     if (fmt.width === width && fmt.height === height) {
         chosenFmt = {
             format: fmt.format,
+            formatName: fmt.formatName,
             width: width,
             height: height,
             interval: fmt.interval
