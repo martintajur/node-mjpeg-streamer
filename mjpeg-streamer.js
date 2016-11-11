@@ -146,7 +146,7 @@ cam.formats.forEach(function(fmt, key) {
 
     if (fmt.width === width && fmt.height === height) {
         chosenFmt = {
-            format: format,
+            format: fmt.format,
             width: width,
             height: height,
             interval: fmt.interval
