@@ -185,7 +185,7 @@ var attachCameraAndStart = function() {
 
     var previousFrame = null;
     var publishFrameInterval = setInterval(function() {
-        lastFrame = Buffer.from(cam.frameRaw());
+        lastFrame = new Buffer(cam.frameRaw());
         if (previousFrame !== null && Buffer.compare(lastFrame, previousFrame) === 0) {
             console.log('Capture stopped - camera likely disconnected');
             clearInterval(publishFrameInterval);
