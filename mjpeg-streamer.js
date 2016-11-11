@@ -176,7 +176,14 @@ var attachCameraAndStart = function() {
     });
     console.log(fmts.join(', '));
 
-    cam.configSet(chosenFmt);
+    try {
+        cam.configSet(chosenFmt);
+    } catch (err) {
+        setTimeout(function() {
+            attachCameraAndStart();
+        }, 2000);
+        return;
+    }
 
     console.log("Format chosen:" + JSON.stringify(chosenFmt));
 
@@ -193,7 +200,7 @@ var attachCameraAndStart = function() {
                 attachCameraAndStart();
             }, 2000);
         }
-        previousFrame = lastFrame;
+        previousFrame = Buffer.from(lastFrame);
     }, 1000 / 15);
 
     cam.capture(function loop(success) {
