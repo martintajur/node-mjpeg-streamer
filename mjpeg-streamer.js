@@ -126,86 +126,72 @@ server.listen(port);
 console.log("Started listening at port " + port);
 console.log("Using v4l2 device /dev/video" + device);
 
-var retryCount = 0;
-var attachCameraAndStart = function() {
-    var cam = null;
+var cam = null;
 
-    try {
-        cam = new v4l2camera.Camera("/dev/video" + device);
-    } catch (err) {
-        console.log('Cannot start camera — ' + err.toString() + ' - retrying in 2...');
-        retryCount++;
-        if (retryCount > 1) {
-            device = getDefaultDevice();
-        }
-        setTimeout(attachCameraAndStart, 2000);
+try {
+    cam = new v4l2camera.Camera("/dev/video" + device);
+} catch (err) {
+    console.log('Cannot start camera — ' + err.toString());
+    process.exit(2);
+}
+
+console.log("Opened camera device /dev/video" + device);
+
+var fmts = [],
+    chosenFmt = {
+        format: cam.configGet().format,
+        formatName: cam.configGet().formatName,
+        width: parseInt(width, 10),
+        height: parseInt(height, 10),
+        interval: cam.configGet().interval
+    },
+    fmtChosen = false;
+
+cam.formats.forEach(function(fmt, key) {
+    if (fmt.formatName !== 'MJPG') {
         return;
     }
+    fmts.push(fmt.formatName + "@" + fmt.width + "x" + fmt.height + "(" + fmt.interval.numerator + "/" + fmt.interval.denominator + ")");
 
-    console.log("Opened camera device /dev/video" + device);
-
-    var fmts = [],
+    if (fmt.width === parseInt(width, 10) && fmt.height === parseInt(height, 10)) {
         chosenFmt = {
-            format: cam.configGet().format,
-            formatName: cam.configGet().formatName,
+            format: fmt.format,
+            formatName: fmt.formatName,
             width: parseInt(width, 10),
             height: parseInt(height, 10),
-            interval: cam.configGet().interval
-        },
-        fmtChosen = false;
-
-    cam.formats.forEach(function(fmt, key) {
-        if (fmt.formatName !== 'MJPG') {
-            return;
-        }
-        fmts.push(fmt.formatName + "@" + fmt.width + "x" + fmt.height + "(" + fmt.interval.numerator + "/" + fmt.interval.denominator + ")");
-
-        if (fmt.width === parseInt(width, 10) && fmt.height === parseInt(height, 10)) {
-            chosenFmt = {
-                format: fmt.format,
-                formatName: fmt.formatName,
-                width: parseInt(width, 10),
-                height: parseInt(height, 10),
-                interval: fmt.interval
-            };
-            fmtChosen = true;
-        }
-    });
-    console.log(fmts.join(', '));
-
-    try {
-        cam.configSet(chosenFmt);
-    } catch (err) {
-        setTimeout(function() {
-            attachCameraAndStart();
-        }, 2000);
-        return;
+            interval: fmt.interval
+        };
+        fmtChosen = true;
     }
+});
+console.log(fmts.join(', '));
 
-    console.log("Format chosen:" + JSON.stringify(chosenFmt));
+try {
+    cam.configSet(chosenFmt);
+} catch (err) {
+    console.log('Cannot configure camera - ' + err.toString());
+    process.exit(3);
+}
 
-    cam.start();
-    console.log("Capture started " + new Date().toISOString());
+console.log("Format chosen:" + JSON.stringify(chosenFmt));
 
-    var previousFrame = null;
-    var publishFrameInterval = setInterval(function() {
-        lastFrame = new Buffer(cam.frameRaw());
-        if (lastFrame.length && previousFrame.length && Buffer.compare(lastFrame, previousFrame) === 0) {
-            console.log('Capture stopped - camera likely disconnected');
-            clearInterval(publishFrameInterval);
-            setTimeout(function() {
-                attachCameraAndStart();
-            }, 2000);
-        }
-        previousFrame = Buffer.from(lastFrame);
-    }, 1000 / 15);
+cam.start();
+console.log("Capture started " + new Date().toISOString());
 
-    cam.capture(function loop(success) {
-        cam.capture(loop);
-    });
-};
+var previousFrame = null;
+var publishFrameInterval = setInterval(function() {
+    lastFrame = new Buffer(cam.frameRaw());
+    if (lastFrame.length && previousFrame.length && Buffer.compare(lastFrame, previousFrame) === 0) {
+        console.log('Capture stopped - camera likely disconnected');
+        clearInterval(publishFrameInterval);
+        process.exit(4);
+    }
+    previousFrame = Buffer.from(lastFrame);
+}, 1000 / 15);
 
-attachCameraAndStart();
+cam.capture(function loop(success) {
+    cam.capture(loop);
+});
 
 function getDefaultDevice() {
     return require('fs').readdirSync('/dev/').map(function(i) {
