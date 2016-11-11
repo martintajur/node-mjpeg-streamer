@@ -126,6 +126,7 @@ var attachCameraAndStart = function() {
     try {
         cam = new v4l2camera.Camera("/dev/video" + device);
     } catch (err) {
+        console.log('Cannot start camera — ' + err.toString() + ' - retrying in 5...');
         setTimeout(attachCameraAndStart, 5000);
         return;
     }
@@ -180,4 +181,6 @@ var attachCameraAndStart = function() {
     cam.capture(function loop(success) {
         cam.capture(loop);
     });
-}();
+};
+
+attachCameraAndStart();
