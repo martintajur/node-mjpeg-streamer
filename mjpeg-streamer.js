@@ -145,7 +145,11 @@ cam.formats.forEach(function(fmt, key) {
     fmts.push(fmt.formatName + "@" + fmt.width + "x" + fmt.height + "(" + fmt.interval.numerator + "/" + fmt.interval.denominator + ")");
 
     if (fmt.width === width && fmt.height === height) {
-        chosenFmt = fmt;
+        chosenFmt = {
+            width: width,
+            height: height,
+            interval: fmt.interval
+        };
         fmtChosen = true;
     }
 });
