@@ -180,6 +180,4 @@ var attachCameraAndStart = function() {
     cam.capture(function loop(success) {
         cam.capture(loop);
     });
-};
-
-attachCameraAndStart();
+}();
