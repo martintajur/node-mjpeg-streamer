@@ -169,13 +169,21 @@ var attachCameraAndStart = function() {
     cam.start();
     console.log("Capture started " + new Date().toISOString());
 
+    var previousFrame = null;
     setInterval(function() {
-        PubSub.publish('MJPEG', Buffer.from(cam.frameRaw()));
+        var lastFrame = Buffer.from(cam.frameRaw());
+        if (previousFrame && Buffer.compare(lastFrame, previousFrame) === 0) {
+            console.log('aha je');
+        }
+        PubSub.publish('MJPEG', lastFrame);
+        previousFrame = lastFrame;
     }, 1000 / 10);
 
     cam.capture(function loop(success) {
         cam.capture(loop);
     });
+
+    cam.afterStoped(attachCameraAndStart);
 };
 
 attachCameraAndStart();
