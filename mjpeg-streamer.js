@@ -15,7 +15,7 @@ var appdescr = bundle.description;
 var default_port = 8080;
 var default_device = 0;
 
-var lastFrame = null;
+var lastFrame = Buffer.from([]);
 
 getopt = new Getopt([
         ['p', 'port=ARG', 'Port'],
