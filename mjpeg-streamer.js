@@ -182,3 +182,5 @@ var attachCameraAndStart = function() {
         cam.capture(loop);
     });
 };
+
+attachCameraAndStart();
