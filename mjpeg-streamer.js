@@ -181,7 +181,7 @@ var attachCameraAndStart = function() {
     } catch (err) {
         setTimeout(function() {
             attachCameraAndStart();
-        }, 2000);
+        }, 4000);
         return;
     }
 
@@ -198,7 +198,7 @@ var attachCameraAndStart = function() {
             clearInterval(publishFrameInterval);
             setTimeout(function() {
                 attachCameraAndStart();
-            }, 2000);
+            }, 4000);
         }
         previousFrame = Buffer.from(lastFrame);
     }, 1000 / 15);
