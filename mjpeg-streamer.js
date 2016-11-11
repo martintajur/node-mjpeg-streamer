@@ -182,8 +182,6 @@ var attachCameraAndStart = function() {
     cam.capture(function loop(success) {
         cam.capture(loop);
     });
-
-    cam.afterStoped(attachCameraAndStart);
 };
 
 attachCameraAndStart();
