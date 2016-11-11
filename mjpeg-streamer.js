@@ -170,7 +170,7 @@ var attachCameraAndStart = function() {
     console.log("Capture started " + new Date().toISOString());
 
     cam.capture(function loop(success) {
-        PubSub.publish('MJPEG', Buffer.from(cam.frameRaw());
+        PubSub.publish('MJPEG', Buffer.from(cam.frameRaw()));
         setTimeout(function() {
             cam.capture(loop);
         }, 1000 / 5);
