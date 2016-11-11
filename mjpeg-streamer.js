@@ -135,10 +135,10 @@ var attachCameraAndStart = function() {
     } catch (err) {
         console.log('Cannot start camera — ' + err.toString() + ' - retrying in 5...');
         retryCount++;
-        if (retryCount === 5) {
+        if (retryCount === 2) {
             device = parseInt(device, 10) + 1;
         }
-        if (retryCount === 10) {
+        if (retryCount === 4) {
             device = parseInt(device, 10) - 1;
         }
         setTimeout(attachCameraAndStart, 5000);
