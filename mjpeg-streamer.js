@@ -133,8 +133,8 @@ var fmts = [],
     chosenFmt = {
         format: cam.configGet().format,
         formatName: cam.configGet().formatName,
-        width: width,
-        height: height,
+        width: parseInt(width, 10),
+        height: parseInt(height, 10),
         interval: cam.configGet().interval
     },
     fmtChosen = false;
@@ -145,12 +145,12 @@ cam.formats.forEach(function(fmt, key) {
     }
     fmts.push(fmt.formatName + "@" + fmt.width + "x" + fmt.height + "(" + fmt.interval.numerator + "/" + fmt.interval.denominator + ")");
 
-    if (fmt.width === width && fmt.height === height) {
+    if (fmt.width === parseInt(width, 10) && fmt.height === parseInt(height, 10)) {
         chosenFmt = {
             format: fmt.format,
             formatName: fmt.formatName,
-            width: width,
-            height: height,
+            width: parseInt(width, 10),
+            height: parseInt(height, 10),
             interval: fmt.interval
         };
         fmtChosen = true;
