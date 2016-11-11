@@ -175,10 +175,11 @@ var attachCameraAndStart = function() {
         if (!lastFrame) {
             return;
         }
-        PubSub.publish('MJPEG', Buffer.from(cam.frameRaw()));
+        PubSub.publish('MJPEG', lastFrame);
     }, 1000 / 5);
 
     cam.capture(function loop(success) {
+        lastFrame = Buffer.from(cam.frameRaw());
         setTimeout(function() {
             cam.capture(loop);
         }, 1000 / 5);
