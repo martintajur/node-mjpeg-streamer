@@ -120,6 +120,7 @@ server.listen(port);
 console.log("Started listening at port " + port);
 console.log("Using v4l2 device /dev/video" + device);
 
+var retryCount = 0;
 var attachCameraAndStart = function() {
     var cam = null;
 
@@ -127,6 +128,13 @@ var attachCameraAndStart = function() {
         cam = new v4l2camera.Camera("/dev/video" + device);
     } catch (err) {
         console.log('Cannot start camera — ' + err.toString() + ' - retrying in 5...');
+        retryCount++;
+        if (retryCount === 5) {
+            device = parseInt(device, 10) + 1;
+        }
+        if (retryCount === 10) {
+            device = parseInt(device, 10) - 1;
+        }
         setTimeout(attachCameraAndStart, 5000);
         return;
     }
@@ -180,6 +188,7 @@ var attachCameraAndStart = function() {
                     attachCameraAndStart();
                 });
             } catch (err) {
+                console.log('Cannot stop camera anymore');
                 attachCameraAndStart();
             }
         }
