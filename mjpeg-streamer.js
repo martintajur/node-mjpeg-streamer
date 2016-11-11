@@ -170,10 +170,17 @@ var attachCameraAndStart = function() {
     console.log("Capture started " + new Date().toISOString());
 
     var previousFrame = null;
-    setInterval(function() {
+    var publishFrameInterval = setInterval(function() {
         var lastFrame = Buffer.from(cam.frameRaw());
         if (previousFrame && Buffer.compare(lastFrame, previousFrame) === 0) {
-            console.log('aha je');
+            console.log('Capture stopped - camera likely disconnected');
+            clearInterval(publishFrameInterval);
+            try {
+                cam.stop();
+            } catch (err) {
+                // well, knew it, but need to do it anyway.
+            }
+            attachCameraAndStart();
         }
         PubSub.publish('MJPEG', lastFrame);
         previousFrame = lastFrame;
