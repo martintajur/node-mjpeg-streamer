@@ -2,12 +2,21 @@
  Mjpeg streamer with v4l2 as camera interface
  
  Based on example code from [v4l2camera](https://github.com/bellbind/node-v4l2camera/blob/master/examples/image-stream-server.js)
- 
+
 ## Installation
 
 ```
 npm install mjpeg-streamer
 ```
+
+## Installation on Raspberry Pi
+
+```
+sudo npm install -g node-pre-gyp
+sudo apt-get install libjpeg-dev
+https://github.com/pipedrive/node-mjpeg-streamer
+```
+
 ## Usage
 
 ```
