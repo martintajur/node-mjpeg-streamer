@@ -181,11 +181,11 @@ console.log("Capture started " + new Date().toISOString());
 var previousFrame = null;
 var publishFrameInterval = setInterval(function() {
     lastFrame = new Buffer(cam.frameRaw());
-    if (lastFrame.length && previousFrame.length && Buffer.compare(lastFrame, previousFrame) === 0) {
-        console.log('Capture stopped - camera likely disconnected');
-        clearInterval(publishFrameInterval);
-        process.exit(4);
-    }
+    //if (lastFrame.length && previousFrame.length && Buffer.compare(lastFrame, previousFrame) === 0) {
+    //    console.log('Capture stopped - camera likely disconnected');
+    //    clearInterval(publishFrameInterval);
+    //    process.exit(4);
+    //}
     previousFrame = Buffer.from(lastFrame);
 }, 1000 / 15);
 
