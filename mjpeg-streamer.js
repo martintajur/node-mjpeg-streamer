@@ -187,7 +187,7 @@ var publishFrameInterval = setInterval(function() {
     //    process.exit(4);
     //}
     previousFrame = Buffer.from(lastFrame);
-}, 1000 / 12);
+}, 1000 / 10);
 
 cam.capture(function loop(success) {
     cam.capture(loop);
