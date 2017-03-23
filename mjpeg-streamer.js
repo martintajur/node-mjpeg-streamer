@@ -190,7 +190,9 @@ var publishFrameInterval = setInterval(function() {
 }, 1000 / 10);
 
 cam.capture(function loop(success) {
-    cam.capture(loop);
+    setTimeout(function() {
+        cam.capture(loop);
+    }, 1000 / 10);
 });
 
 function getDefaultDevice() {
